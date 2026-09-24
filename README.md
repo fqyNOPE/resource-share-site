@@ -21,6 +21,8 @@ npm run preview
 1. 在 Supabase SQL Editor 中执行 `supabase/schema.sql`。
 2. 在 GitHub 仓库 Actions Secrets 中设置 `VITE_SUPABASE_URL` 和 `VITE_SUPABASE_PUBLISHABLE_KEY`。
 3. 前端会优先读取 Supabase 中 `status = published` 的资源；连接失败时保留演示数据。
+4. 上传前必须先登录 Supabase；文件会保存到私有 `resource-files` 存储桶，资源记录默认是 `pending`，需要管理员审核后才会显示。
+5. 如果 `schema.sql` 已经执行过，请重新执行其中新增的 Storage bucket 和 Storage policy 部分。
 4. `VITE_SUPABASE_URL` 应填写项目根地址（例如 `https://your-project.supabase.co`），不要带 `/rest/v1/`。
 
 ## GitHub Pages 部署

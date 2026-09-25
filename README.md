@@ -21,8 +21,8 @@ npm run preview
 1. 在 Supabase SQL Editor 中执行 `supabase/schema.sql`。
 2. 在 GitHub 仓库 Actions Secrets 中设置 `VITE_SUPABASE_URL` 和 `VITE_SUPABASE_PUBLISHABLE_KEY`。
 3. 前端会优先读取 Supabase 中 `status = published` 的资源；连接失败时保留演示数据。
-4. 上传前必须先登录 Supabase；文件会保存到私有 `resource-files` 存储桶，资源记录默认是 `pending`，需要管理员审核后才会显示。
-5. 如果 `schema.sql` 已经执行过，请重新执行其中新增的 profiles、Storage bucket 和 Storage policy 部分。
+4. 上传前必须先登录 Supabase；文件会保存到私有 `resource-files` 存储桶，管理员上传后立即以 `published` 状态显示。
+5. 如果 `schema.sql` 已经执行过，请重新执行其中新增的 profiles、Storage bucket、Storage policy 和清理示例数据部分。
 6. 第一个管理员需要在 Supabase 注册后，在 Table Editor 的 `profiles` 表中把自己的 `role` 改为 `admin`。普通用户保持 `user`。
 7. 网站只展示 `视频` 分类资源；视频详情使用临时播放地址和 HTML5 播放器，不提供下载按钮。
 8. `VITE_SUPABASE_URL` 应填写项目根地址（例如 `https://your-project.supabase.co`），不要带 `/rest/v1/`。

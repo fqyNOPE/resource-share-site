@@ -75,8 +75,9 @@ insert into public.resources (title, description, category, file_type, file_size
 select * from (values
   ('小学语文五年级下册精品课件', '覆盖五年级下册重点课文的课堂课件，包含教学目标、课堂活动与课后练习。', '课件', 'PPTX', 19503513::bigint, 'published'),
   ('初中数学几何专题复习资料', '整理平面几何核心知识点与典型例题，适合复习课和专题训练使用。', '教案', 'PDF', 6501171::bigint, 'published'),
-  ('校园安全教育主题班会', '校园安全主题班会视频资源，适合班级教育和家校共育场景。', '视频', 'MP4', 44879052::bigint, 'published'),
   ('英语自然拼读互动练习', '适合低年级学生的自然拼读练习单，配套课堂互动环节。', '练习', 'DOCX', 3984588::bigint, 'published'),
   ('教师公开课评价量表', '公开课听评课通用评价量表，支持按课堂环节进行记录。', '表格', 'XLSX', 1153433::bigint, 'published')
 ) as seed(title, description, category, file_type, file_size, status)
 where not exists (select 1 from public.resources);
+
+delete from public.resources where title = '校园安全教育主题班会';

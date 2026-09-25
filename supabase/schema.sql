@@ -4,6 +4,19 @@ insert into storage.buckets (id, name, public)
 values ('resource-files', 'resource-files', false)
 on conflict (id) do nothing;
 
+create table if not exists public.profiles (
+  id uuid primary key references auth.users(id) on delete cascade,
+  role text not null default 'user' check (role in ('user', 'admin')),
+  created_at timestamptz not null default now()
+);
+
+create or replace function public.handle_new_user()
+returns trigger language plpgsql security definer set search_path = public
+as $$ begin insert into public.profiles (id) values (new.id) on conflict do nothing; return new; end; $$;
+
+drop trigger if exists on_auth_user_created on auth.users;
+create trigger on_auth_user_created after insert on auth.users for each row execute procedure public.handle_new_user();
+
 create table if not exists public.resources (
   id uuid primary key default gen_random_uuid(),
   title text not null,
@@ -32,8 +45,12 @@ create table if not exists public.download_logs (
   created_at timestamptz not null default now()
 );
 
+alter table public.profiles enable row level security;
 alter table public.resources enable row level security;
 alter table public.favorites enable row level security;
+
+drop policy if exists "users can read their own profile" on public.profiles;
+create policy "users can read their own profile" on public.profiles for select to authenticated using (auth.uid() = id);
 alter table public.download_logs enable row level security;
 
 drop policy if exists "published resources are publicly readable" on public.resources;
@@ -45,10 +62,10 @@ create policy "users can add their own favorites" on public.favorites for insert
 drop policy if exists "users can delete their own favorites" on public.favorites;
 create policy "users can delete their own favorites" on public.favorites for delete to authenticated using (auth.uid() = user_id);
 drop policy if exists "users can submit resources" on public.resources;
-create policy "users can submit resources" on public.resources for insert to authenticated with check (auth.uid() = author_id);
+create policy "admins can submit video resources" on public.resources for insert to authenticated with check (auth.uid() = author_id and category = '视频' and (select role from public.profiles where id = auth.uid()) = 'admin');
 
 drop policy if exists "authenticated users can upload resource files" on storage.objects;
-create policy "authenticated users can upload resource files" on storage.objects for insert to authenticated with check (bucket_id = 'resource-files' and (storage.foldername(name))[1] = (select auth.uid()::text));
+create policy "admins can upload video files" on storage.objects for insert to authenticated with check (bucket_id = 'resource-files' and (storage.foldername(name))[1] = (select auth.uid()::text) and (select role from public.profiles where id = auth.uid()) = 'admin');
 drop policy if exists "users can read published resource files" on storage.objects;
 create policy "users can read published resource files" on storage.objects for select to authenticated using (bucket_id = 'resource-files');
 drop policy if exists "users can delete their own resource files" on storage.objects;

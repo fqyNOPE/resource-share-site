@@ -25,6 +25,7 @@ npm run preview
 5. 如果 `schema.sql` 已经执行过，请重新执行其中新增的 profiles、Storage bucket、Storage policy 和清理示例数据部分。
 6. 第一个管理员需要在 Supabase 注册后，在 Table Editor 的 `profiles` 表中把自己的 `role` 改为 `admin`。普通用户保持 `user`。
 7. 网站只展示 `视频` 分类资源；视频详情使用临时播放地址和 HTML5 播放器，不提供下载按钮。
+8. 管理员视频使用 Supabase Storage TUS 可恢复分片上传，单个文件上限约 4 GB，上传窗口显示进度、速度和剩余时间。
 8. `VITE_SUPABASE_URL` 应填写项目根地址（例如 `https://your-project.supabase.co`），不要带 `/rest/v1/`。
 
 ## GitHub Pages 部署
